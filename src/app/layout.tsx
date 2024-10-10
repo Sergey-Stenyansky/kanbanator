@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import {
   AppBar,
   CssBaseline,
-  IconButton,
   ThemeProvider,
   Toolbar,
   Typography,
+  Avatar,
 } from "@mui/material";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { defaultTheme } from "@/theme/factory";
+import Link from "next/link";
+
+import styles from "./styles.module.css";
+import Spacing from "@/primitives/Spacing";
 
 export const metadata: Metadata = {
   title: "Kanbanator",
@@ -32,9 +35,11 @@ export default function RootLayout({
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                   Kanbanator
                 </Typography>
-                <IconButton size="large" color="inherit">
-                  <AccountCircle />
-                </IconButton>
+                <Link className={styles.profileLink} href="/profile">
+                  <Typography>Jacob Burton</Typography>
+                  <Spacing h={2} />
+                  <Avatar alt="Jacob Burton" src="https://i.pravatar.cc/300" />
+                </Link>
               </Toolbar>
             </AppBar>
             {children}
