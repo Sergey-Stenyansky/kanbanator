@@ -25,3 +25,23 @@ export type KanbanUser = {
   avatarUrl?: string;
   role: string;
 };
+
+export type KanbanColumn = {
+  id: number;
+  name: string;
+  tasks: number[];
+};
+
+export type KanbanColumnItem = Omit<KanbanColumn, "tasks"> & {
+  tasks: KanbanTaskItem[];
+};
+
+export type KanbanFlow = {
+  id: number;
+  name: string;
+  columns: number[];
+};
+
+export type KanbanFlowItem = Omit<KanbanFlow, "columns"> & {
+  columns: KanbanColumnItem[];
+};

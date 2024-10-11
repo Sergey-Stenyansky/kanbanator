@@ -4,7 +4,7 @@ import BoardContent from "./elements/BoardContent";
 export default function Board() {
   return (
     <Stack>
-      <BoardContent />
+      <BoardContent flow={null} />
     </Stack>
   );
 }
