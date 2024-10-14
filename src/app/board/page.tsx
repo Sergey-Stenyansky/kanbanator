@@ -4,82 +4,58 @@ import { Stack } from "@mui/material";
 import BoardContent from "./elements/BoardContent";
 
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import { KanbanFlowItem } from "@/core/types";
+import { KanbanFlowItem, KanbanTaskItem } from "@/core/types";
+import { prepareFlow } from "@/core/helpers/flow";
+import { useState } from "react";
 
-const flow: KanbanFlowItem = {
-  id: 1,
-  name: "Kanban Board",
-  columns: [
-    {
-      id: 1,
-      name: "Backlog",
-      tasks: [
-        {
-          id: 1,
-          name: "Fix Header",
-          createdAt: "2024-10-10 14:00",
-          editedAt: "2024-10-10 14:00",
-          deadline: "2024-10-10 16:00",
-          createdBy: {
-            id: 1,
-            name: "Ava Parry",
-            role: "Developer",
-            avatarUrl: "https://i.pravatar.cc/300",
-          },
-          assignedTo: [
-            {
-              id: 1,
-              name: "Ava Parry",
-              role: "Developer",
-              avatarUrl: "https://i.pravatar.cc/300",
-            },
-          ],
-          priority: "low",
-          description: "test",
-          comments: 0,
-          labels: ["blocker", "bug"],
-        },
-        {
-          id: 2,
-          name: "Fix Description",
-          createdAt: "2024-10-10 14:00",
-          editedAt: "2024-10-10 14:00",
-          deadline: "2024-10-10 16:00",
-          createdBy: {
-            id: 1,
-            name: "Ava Parry",
-            role: "Developer",
-            avatarUrl: "https://i.pravatar.cc/300",
-          },
-          assignedTo: [
-            {
-              id: 1,
-              name: "Ava Parry",
-              role: "Developer",
-              avatarUrl: "https://i.pravatar.cc/300",
-            },
-          ],
-          priority: "medium",
-          description: "test",
-          comments: 0,
-          labels: ["financial risk", "bug"],
-        },
-      ],
-    },
-    { id: 2, name: "In progress", tasks: [] },
-    { id: 3, name: "Done", tasks: [] },
-  ],
-};
+import { flow } from "@/mocks/flow";
 
 export default function Board() {
+  const [internalFlow, setInternalFlow] = useState<KanbanFlowItem>(() =>
+    prepareFlow(flow)
+  );
+
   const onDragEnd = (res: DropResult) => {
-    console.log(res);
+    if (!res.destination) return;
+
+    if (res.reason !== "DROP") return;
+
+    const srcCol = internalFlow.columns.find(
+      (col) => res.source.droppableId === "column-" + col.id
+    );
+    const dstCol = internalFlow.columns.find(
+      (col) => res.destination?.droppableId === "column-" + col.id
+    );
+    const srcTask = srcCol?.tasks[res.source.index];
+
+    if (!srcCol || !dstCol || !srcTask) return;
+
+    setInternalFlow((oldValue) => ({
+      ...oldValue,
+      columns: oldValue.columns.map((col) => {
+        let newTasks: KanbanTaskItem[] | null = null;
+        if (col.id === srcCol.id) {
+          newTasks = srcCol.tasks.toSpliced(res.source.index, 1);
+        }
+        if (col.id === dstCol.id) {
+          newTasks = (newTasks || dstCol.tasks).toSpliced(
+            res.destination!.index,
+            0,
+            srcTask
+          );
+        }
+        if (newTasks) {
+          return { ...col, tasks: newTasks };
+        }
+        return col;
+      }),
+    }));
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Stack>
-        <BoardContent flow={flow} />
+        <BoardContent flow={internalFlow} />
       </Stack>
     </DragDropContext>
   );
