@@ -1,5 +1,16 @@
 export type KanbanTaskPriority = "low" | "medium" | "high" | "critical";
 
+export type KanbanTaskComment = {
+  id: number;
+  content: string;
+  author: number;
+  createdAt: string;
+};
+
+export type KanbanTaskCommentItem = Omit<KanbanTaskComment, "author"> & {
+  author: KanbanUser;
+};
+
 export type KanbanTask = {
   id: number;
   name: string;
@@ -10,13 +21,17 @@ export type KanbanTask = {
   priority: KanbanTaskPriority;
   createdAt: string;
   editedAt: string;
-  comments: number;
+  comments: number[];
   labels: string[];
 };
 
-export type KanbanTaskItem = Omit<KanbanTask, "createdBy" | "assignedTo"> & {
+export type KanbanTaskItem = Omit<
+  KanbanTask,
+  "createdBy" | "assignedTo" | "comments"
+> & {
   createdBy: KanbanUser;
   assignedTo: KanbanUser[];
+  comments: KanbanTaskCommentItem[];
 };
 
 export type KanbanUser = {

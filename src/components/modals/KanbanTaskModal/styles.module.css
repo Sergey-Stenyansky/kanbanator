@@ -1,0 +1,24 @@
+.container {
+  max-width: 100%;
+  width: calc(100% - 2 * 32px);
+  min-height: 500px;
+}
+
+.content {
+  display: flex;
+  gap: 16px;
+}
+
+.left {
+  flex: 1;
+}
+
+.right {
+  width: 300px;
+  max-width: 300px;
+}
+
+.labelContainer {
+  display: flex;
+  gap: 8px;
+}

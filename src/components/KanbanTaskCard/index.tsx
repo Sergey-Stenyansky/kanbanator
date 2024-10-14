@@ -12,12 +12,15 @@ import {
 import { flexJcStart, flexSpaceBetween } from "@/theme/commonStyles";
 import Spacing from "@/primitives/Spacing";
 
-import { BaseColors } from "@/theme/types";
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
+import { useToggle } from "react-use";
+import KanbanTaskModal from "../modals/KanbanTaskModal";
+
+import { taskPriorityColorsMap } from "@/core/helpers/constant";
 
 const KanbanTaskCard = ({
   task,
@@ -25,32 +28,43 @@ const KanbanTaskCard = ({
 }: {
   task: KanbanTaskItem;
   index: number;
-}) => (
-  <Draggable draggableId={"task-" + task.id} index={index}>
-    {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
-      <Card
-        ref={provided.innerRef}
-        sx={{ backgroundColor: snapshot.isDragging ? "lightcoral" : "" }}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <CardContent>
-          <KanbanTaskCardHeader
-            title={task.name}
-            id={task.id}
-            priority={task.priority}
-          />
-          <Divider />
-          <Spacing v={1} />
-          <KanbanTaskCardFooter
-            assingedTo={task.assignedTo}
-            labels={task.labels}
-          />
-        </CardContent>
-      </Card>
-    )}
-  </Draggable>
-);
+}) => {
+  const [opened, toggleOpened] = useToggle(false);
+  return (
+    <>
+      <Draggable draggableId={"task-" + task.id} index={index}>
+        {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
+          <Card
+            ref={provided.innerRef}
+            sx={{ backgroundColor: snapshot.isDragging ? "lightcoral" : "" }}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            onClick={toggleOpened}
+          >
+            <CardContent>
+              <KanbanTaskCardHeader
+                title={task.name}
+                id={task.id}
+                priority={task.priority}
+              />
+              <Divider />
+              <Spacing v={1} />
+              <KanbanTaskCardFooter
+                assingedTo={task.assignedTo}
+                labels={task.labels}
+              />
+            </CardContent>
+          </Card>
+        )}
+      </Draggable>
+      <KanbanTaskModal
+        opened={opened}
+        onChangeOpened={toggleOpened}
+        task={task}
+      />
+    </>
+  );
+};
 
 const KanbanTaskCardFooter = ({
   labels,
@@ -81,13 +95,6 @@ const KanbanTaskCardFooter = ({
     )}
   </Box>
 );
-
-const taskPriorityColorsMap: Record<KanbanTaskPriority, BaseColors> = {
-  low: "success",
-  medium: "info",
-  high: "warning",
-  critical: "warning",
-};
 
 const KanbanTaskCardHeader = ({
   title,
