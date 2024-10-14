@@ -22,6 +22,8 @@ import KanbanTaskModal from "../modals/KanbanTaskModal";
 
 import { taskPriorityColorsMap } from "@/core/helpers/constant";
 
+import styles from "./style.module.css";
+
 const KanbanTaskCard = ({
   task,
   index,
@@ -82,14 +84,9 @@ const KanbanTaskCardFooter = ({
       </Box>
     )}
     {!!assingedTo.length && (
-      <AvatarGroup max={3}>
+      <AvatarGroup max={3} classes={{ avatar: styles.avatar }}>
         {assingedTo.map((user) => (
-          <Avatar
-            sx={{ maxHeight: 30, maxWidth: 30 }}
-            key={user.id}
-            alt={user.name}
-            src={user.avatarUrl}
-          />
+          <Avatar key={user.id} alt={user.name} src={user.avatarUrl} />
         ))}
       </AvatarGroup>
     )}
