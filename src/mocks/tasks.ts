@@ -8,10 +8,10 @@ export const tasks: KanbanTask[] = [
     editedAt: "2024-10-10 14:00",
     deadline: "2024-10-10 16:00",
     createdBy: 1,
-    assignedTo: [2],
+    assignedTo: [1, 2, 3, 4],
     priority: "low",
     description: "test",
-    comments: 0,
+    comments: [1, 2, 3, 4, 5],
     labels: ["blocker", "bug"],
   },
   {
@@ -24,7 +24,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [1],
     priority: "medium",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["financial risk", "bug"],
   },
   {
@@ -37,7 +37,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [1],
     priority: "critical",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["financial risk", "bug"],
   },
   {
@@ -50,7 +50,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [],
     priority: "low",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["docs"],
   },
   {
@@ -63,7 +63,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [1],
     priority: "medium",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["feature"],
   },
   {
@@ -76,7 +76,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [1],
     priority: "low",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["nice to have"],
   },
   {
@@ -89,7 +89,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [],
     priority: "medium",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["test"],
   },
   {
@@ -102,7 +102,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [],
     priority: "medium",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["reports", "3rd party"],
   },
   {
@@ -115,7 +115,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [],
     priority: "low",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["info"],
   },
   {
@@ -128,7 +128,7 @@ export const tasks: KanbanTask[] = [
     assignedTo: [],
     priority: "medium",
     description: "test",
-    comments: 0,
+    comments: [],
     labels: ["test"],
   },
 ];
