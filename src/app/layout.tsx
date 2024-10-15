@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body style={{ minHeight: "100vh" }}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={defaultTheme}>
             <AppBar position="static">
