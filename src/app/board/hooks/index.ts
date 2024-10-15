@@ -1,19 +1,12 @@
 "use client";
 
 import { DropResult } from "@hello-pangea/dnd";
-import { KanbanFlow } from "@/core/types";
-import { prepareFlow } from "@/core/helpers/flow";
-import { useReducer } from "react";
 
-import { flow } from "@/mocks/flow";
-import { flowActions, FlowStore } from "@/core/reducers/flow";
+import { flowActions } from "@/core/reducers/flow";
+import { useBoardContext } from "../context";
 
 export const useKanbanFlow = () => {
-  const [flowStore, flowDispatch] = useReducer(
-    FlowStore,
-    flow,
-    (flow: KanbanFlow) => ({ flow: prepareFlow(flow) })
-  );
+  const { flowState, flowDispatch } = useBoardContext();
 
   const addColumn = (position: number, name: string) => {
     flowDispatch(flowActions.add(position, name));
@@ -46,7 +39,7 @@ export const useKanbanFlow = () => {
     addColumn,
     removeColumn,
     setColumnName,
-    flowStore,
+    flowState,
     onDragEnd,
   };
 };

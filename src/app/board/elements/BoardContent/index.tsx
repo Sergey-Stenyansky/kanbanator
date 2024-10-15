@@ -8,6 +8,10 @@ import {
   DroppableProvided,
   DroppableStateSnapshot,
 } from "@hello-pangea/dnd";
+import { useToggle } from "react-use";
+import SetColumnModal from "../SetColumnModal";
+import { useBoardContext } from "@/app/board/context";
+import { flowActions } from "@/core/reducers/flow";
 
 export interface BoardContentProps {
   flow: KanbanFlowItem | null;
@@ -29,10 +33,32 @@ const BoardContent = ({ flow }: BoardContentProps) => (
 );
 
 const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
+  const [opened, setOpened] = useToggle(false);
+  const { flowDispatch } = useBoardContext();
+  const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
+    if (!args) {
+      return setOpened(false);
+    }
+    if (args.name) {
+      flowDispatch(flowActions.update(item.id, args.name));
+      return setOpened(false);
+    }
+    if (args.deleteAction) {
+      flowDispatch(flowActions.remove(item.id));
+      return setOpened(false);
+    }
+  };
   return (
     <Box>
       <Spacing v={1} />
-      <Typography variant="h6">{item.name}</Typography>
+      <Typography
+        sx={{ cursor: "pointer" }}
+        onClick={() => setOpened(true)}
+        variant="h6"
+      >
+        {item.name}
+      </Typography>
+      <SetColumnModal opened={opened} onSubmit={handleSumbit} column={item} />
       <Spacing v={2} />
       <Droppable droppableId={"column-" + item.id}>
         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (

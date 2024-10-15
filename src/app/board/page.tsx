@@ -1,19 +1,25 @@
 "use client";
 
-import { Stack } from "@mui/material";
 import BoardContent from "./elements/BoardContent";
 
 import { DragDropContext } from "@hello-pangea/dnd";
 
 import { useKanbanFlow } from "./hooks";
+import BoardContextProvider from "./provider";
 
-export default function Board() {
-  const { flowStore, onDragEnd } = useKanbanFlow();
+function PageContent() {
+  const { flowState, onDragEnd } = useKanbanFlow();
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Stack>
-        <BoardContent flow={flowStore.flow} />
-      </Stack>
+      <BoardContent flow={flowState.flow} />
     </DragDropContext>
+  );
+}
+
+export default function Board() {
+  return (
+    <BoardContextProvider>
+      <PageContent />
+    </BoardContextProvider>
   );
 }
