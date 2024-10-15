@@ -42,6 +42,7 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
               setName(e.target.value)
             }
             onClear={() => setName("")}
+            required
           />
         </Stack>
       </DialogContent>
@@ -51,7 +52,11 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
             Delete column
           </Button>
         )}
-        <Button autoFocus onClick={() => onSubmit({ name })}>
+        <Button
+          autoFocus
+          disabled={!name.trim()}
+          onClick={() => onSubmit({ name })}
+        >
           {column ? "Save changes" : "Create column"}
         </Button>
       </DialogActions>
