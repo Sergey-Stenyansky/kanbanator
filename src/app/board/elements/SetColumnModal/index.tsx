@@ -11,6 +11,7 @@ import Spacing from "@/primitives/Spacing";
 
 import TextInput from "@/primitives/TextInput";
 import { KanbanColumnItem } from "@/core/types";
+import { useBoardContext } from "@/app/board/context";
 
 export interface SetColumnModalProps {
   opened: boolean;
@@ -19,6 +20,7 @@ export interface SetColumnModalProps {
 }
 
 const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
+  const { flowPermissions } = useBoardContext();
   const [name, setName] = useState("");
   useEffect(() => {
     if (!opened || !column) return;
@@ -44,7 +46,7 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
         </Stack>
       </DialogContent>
       <DialogActions>
-        {!!column && (
+        {!!column && flowPermissions.canDeleteColumns && (
           <Button autoFocus onClick={() => onSubmit({ deleteAction: true })}>
             Delete task
           </Button>

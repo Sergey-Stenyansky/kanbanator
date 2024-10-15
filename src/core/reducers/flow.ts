@@ -1,5 +1,6 @@
 import { columnIdGenerator } from "@/mocks/columns";
 import { KanbanColumnItem, KanbanFlowItem, KanbanTaskItem } from "../types";
+import { getFlowPermissions } from "../helpers/flow";
 
 export type FlowStoreState = {
   flow: KanbanFlowItem;
@@ -37,6 +38,7 @@ export const FlowStore = (
   const flow = state.flow;
   switch (type) {
     case FlowStoreActionTypes.add: {
+      if (!getFlowPermissions(state.flow).canAddColumns) return state;
       const newColumn: KanbanColumnItem = {
         id: columnIdGenerator(),
         name: payload.name,
@@ -51,6 +53,7 @@ export const FlowStore = (
       };
     }
     case FlowStoreActionTypes.remove: {
+      if (!getFlowPermissions(state.flow).canDeleteColumns) return state;
       const idx = flow.columns.findIndex((col) => col.id === payload);
       if (idx < 0) return state;
       return {

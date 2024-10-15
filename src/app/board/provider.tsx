@@ -6,7 +6,7 @@ import { flow } from "@/mocks/flow";
 
 import { KanbanFlow } from "@/core/types";
 
-import { prepareFlow } from "@/core/helpers/flow";
+import { getFlowPermissions, prepareFlow } from "@/core/helpers/flow";
 
 import { BoardContext } from "./context";
 
@@ -17,7 +17,13 @@ const BoardContextProvider = ({ children }: PropsWithChildren<{}>) => {
     (flow: KanbanFlow) => ({ flow: prepareFlow(flow) })
   );
 
-  const contextValue = { flowState, flowDispatch };
+  const permisisons = getFlowPermissions(flowState.flow);
+
+  const contextValue = {
+    flowState,
+    flowDispatch,
+    flowPermissions: permisisons,
+  };
 
   return (
     <BoardContext.Provider value={contextValue}>

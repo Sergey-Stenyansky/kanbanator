@@ -3,7 +3,7 @@ import { tasks } from "@/mocks/tasks";
 import { comments } from "@/mocks/comments";
 import { columns } from "@/mocks/columns";
 
-import { KanbanFlow } from "../types";
+import { KanbanFlow, KanbanFlowItem } from "../types";
 
 export const prepareFlow = (flow: KanbanFlow) => ({
   ...flow,
@@ -25,3 +25,7 @@ export const prepareFlow = (flow: KanbanFlow) => ({
     return { ...foundColumn, tasks: columnTasks };
   }),
 });
+
+export const getFlowPermissions = (flow: KanbanFlowItem) => {
+  return { canAddColumns: true, canDeleteColumns: flow.columns.length > 3 };
+};
