@@ -13,23 +13,31 @@ export enum FlowStoreActionTypes {
   swapTask = "swapTask",
 }
 
+type FlowStoreActionAdd = {
+  type: FlowStoreActionTypes.add;
+  payload: { position: number; name: string };
+};
+
+type FlowStoreActionRemove = {
+  type: FlowStoreActionTypes.remove;
+  payload: number;
+};
+
+type FlowStoreActionUpdate = {
+  type: FlowStoreActionTypes.update;
+  payload: { id: number; config: Partial<KanbanColumnItem> };
+};
+
+type FlowStoreActionSwapTask = {
+  type: FlowStoreActionTypes.swapTask;
+  payload: { srcId: string; dstId: string; srcIdx: number; dstIdx: number };
+};
+
 export type FlowStoreActions =
-  | {
-      type: FlowStoreActionTypes.add;
-      payload: { position: number; name: string };
-    }
-  | {
-      type: FlowStoreActionTypes.remove;
-      payload: number;
-    }
-  | {
-      type: FlowStoreActionTypes.update;
-      payload: { id: number; config: Partial<KanbanColumnItem> };
-    }
-  | {
-      type: FlowStoreActionTypes.swapTask;
-      payload: { srcId: string; dstId: string; srcIdx: number; dstIdx: number };
-    };
+  | FlowStoreActionAdd
+  | FlowStoreActionRemove
+  | FlowStoreActionUpdate
+  | FlowStoreActionSwapTask;
 
 export const FlowStore = (
   state: FlowStoreState,
