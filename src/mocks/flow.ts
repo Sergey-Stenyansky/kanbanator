@@ -1,10 +1,7 @@
 import { KanbanFlow } from "@/core/types";
-import { idGenerator } from "@/helpers/idGenerator";
-
-export const flowIdGenerator = idGenerator();
 
 export const flow: KanbanFlow = {
-  id: flowIdGenerator(),
+  id: 1,
   name: "Kanban Board",
   columns: [1, 2, 3],
 };

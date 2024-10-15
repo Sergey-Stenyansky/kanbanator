@@ -1,4 +1,4 @@
-import { columnIdGenerator } from "@/mocks/columns";
+import { columnIdGenerator } from "@/helpers/idGenerator";
 import { KanbanColumnItem, KanbanFlowItem, KanbanTaskItem } from "../types";
 import { getFlowPermissions } from "../helpers/flow";
 

@@ -1,4 +1,6 @@
-export const idGenerator = () => {
-  let id = 0;
+export const idGenerator = (start = 0) => {
+  let id = start;
   return () => ++id;
 };
+
+export const columnIdGenerator = idGenerator(100);

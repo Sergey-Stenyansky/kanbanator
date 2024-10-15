@@ -1,11 +1,8 @@
 import { KanbanTask } from "@/core/types";
-import { idGenerator } from "@/helpers/idGenerator";
-
-export const taskIdGenerator = idGenerator();
 
 export const tasks: KanbanTask[] = [
   {
-    id: taskIdGenerator(),
+    id:1,
     name: "Fix Header",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
@@ -18,7 +15,7 @@ export const tasks: KanbanTask[] = [
     labels: ["blocker", "bug"],
   },
   {
-    id: taskIdGenerator(),
+    id: 2,
     name: "Fix Description",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
@@ -31,7 +28,7 @@ export const tasks: KanbanTask[] = [
     labels: ["financial risk", "bug"],
   },
   {
-    id: taskIdGenerator(),
+    id: 3,
     name: "Fix Description",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
@@ -44,7 +41,7 @@ export const tasks: KanbanTask[] = [
     labels: ["financial risk", "bug"],
   },
   {
-    id: taskIdGenerator(),
+    id: 4,
     name: "Update Docs",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
@@ -57,7 +54,7 @@ export const tasks: KanbanTask[] = [
     labels: ["docs"],
   },
   {
-    id: taskIdGenerator(),
+    id: 5,
     name: "Create Product Card",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
@@ -70,7 +67,7 @@ export const tasks: KanbanTask[] = [
     labels: ["feature"],
   },
   {
-    id: taskIdGenerator(),
+    id: 6,
     name: "Update Dependencies",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
