@@ -23,8 +23,8 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
   const { flowPermissions } = useBoardContext();
   const [name, setName] = useState("");
   useEffect(() => {
-    if (!opened || !column) return;
-    setName(column.name);
+    if (!opened) return;
+    setName(column?.name || "");
   }, [opened, column]);
   return (
     <Dialog open={opened} onClose={() => onSubmit()} scroll="paper">
