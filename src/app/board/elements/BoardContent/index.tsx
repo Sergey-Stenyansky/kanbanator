@@ -18,6 +18,16 @@ export interface BoardContentProps {
   flow: KanbanFlowItem | null;
 }
 
+const boardContentStyles = {
+  display: "grid",
+  gridAutoColumns: "300px",
+  gridAutoFlow: "column",
+  overflow: "auto",
+  gap: 3,
+  padding: 1,
+  minHeight: "720px",
+};
+
 const BoardContent = ({ flow }: BoardContentProps) => {
   const { flowDispatch } = useBoardContext();
   const [opened, setOpened] = useToggle(false);
@@ -31,17 +41,13 @@ const BoardContent = ({ flow }: BoardContentProps) => {
     }
   };
   return (
-    <Box sx={{ m: 2 }}>
-      <Button autoFocus startIcon={<Add />} onClick={() => setOpened(true)}>
-        Add Column
-      </Button>
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: 3,
-        }}
-      >
+    <Box sx={{ p: 2 }}>
+      <Box>
+        <Button autoFocus startIcon={<Add />} onClick={() => setOpened(true)}>
+          Add Column
+        </Button>
+      </Box>
+      <Box sx={boardContentStyles}>
         {flow?.columns.map((column, index) => (
           <BoardColumn key={index} item={column} />
         ))}
@@ -68,7 +74,7 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
     }
   };
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Spacing v={1} />
       <Typography
         sx={{ cursor: "pointer" }}
@@ -78,7 +84,7 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
         {item.name}
       </Typography>
       <SetColumnModal opened={opened} onSubmit={handleSumbit} column={item} />
-      <Spacing v={2} />
+      <Spacing v={1} />
       <Droppable droppableId={"column-" + item.id}>
         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
           <Stack
@@ -88,9 +94,8 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
                 ? "lightgreen"
                 : "lightblue",
               height: "100%",
+              flex: 1,
             }}
-            ml={1}
-            mb={1}
             p={1}
             gap={1}
             useFlexGap
