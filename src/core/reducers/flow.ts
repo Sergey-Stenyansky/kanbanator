@@ -70,7 +70,7 @@ export const FlowStore = (
         ...state,
         flow: {
           ...flow,
-          columns: flow.columns.toSpliced(idx, 0, newColumn),
+          columns: flow.columns.toSpliced(idx, 1, newColumn),
         },
       };
     }
