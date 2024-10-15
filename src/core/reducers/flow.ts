@@ -15,7 +15,7 @@ export enum FlowStoreActionTypes {
 
 type FlowStoreActionAdd = {
   type: FlowStoreActionTypes.add;
-  payload: { position: number; name: string };
+  payload: { name: string; position?: number };
 };
 
 type FlowStoreActionRemove = {
@@ -52,11 +52,12 @@ export const FlowStore = (
         name: payload.name,
         tasks: [],
       };
+      const position = payload.position || state.flow.columns.length;
       return {
         ...state,
         flow: {
           ...flow,
-          columns: flow.columns.toSpliced(payload.position, 0, newColumn),
+          columns: flow.columns.toSpliced(position, 1, newColumn),
         },
       };
     }
@@ -113,7 +114,7 @@ export const FlowStore = (
 };
 
 export const flowActions = {
-  add: (position: number, name: string) =>
+  add: (name: string, position?: number) =>
     ({
       type: FlowStoreActionTypes.add,
       payload: { name, position },

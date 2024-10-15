@@ -26,7 +26,7 @@ const BoardContent = ({ flow }: BoardContentProps) => {
       return setOpened(false);
     }
     if (args.name) {
-      flowDispatch(flowActions.add(0, args.name));
+      flowDispatch(flowActions.add(args.name));
       return setOpened(false);
     }
   };

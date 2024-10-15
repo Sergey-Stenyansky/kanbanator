@@ -8,8 +8,8 @@ import { useBoardContext } from "../context";
 export const useKanbanFlow = () => {
   const { flowState, flowDispatch } = useBoardContext();
 
-  const addColumn = (position: number, name: string) => {
-    flowDispatch(flowActions.add(position, name));
+  const addColumn = (name: string, position?: number) => {
+    flowDispatch(flowActions.add(name, position));
   };
 
   const removeColumn = (id: number) => {
