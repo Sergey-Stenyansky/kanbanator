@@ -2,7 +2,7 @@ import { KanbanTask } from "@/core/types";
 
 export const tasks: KanbanTask[] = [
   {
-    id: 1,
+    id:1,
     name: "Fix Header",
     createdAt: "2024-10-10 14:00",
     editedAt: "2024-10-10 14:00",
