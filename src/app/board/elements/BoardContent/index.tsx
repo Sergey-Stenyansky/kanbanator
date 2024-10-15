@@ -1,5 +1,5 @@
 import { KanbanColumnItem, KanbanFlowItem } from "@/core/types";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, Button } from "@mui/material";
 import KanbanTaskCard from "@/components/KanbanTaskCard";
 
 import Spacing from "@/primitives/Spacing";
@@ -12,25 +12,44 @@ import { useToggle } from "react-use";
 import SetColumnModal from "../SetColumnModal";
 import { useBoardContext } from "@/app/board/context";
 import { flowActions } from "@/core/reducers/flow";
+import { Add } from "@mui/icons-material";
 
 export interface BoardContentProps {
   flow: KanbanFlowItem | null;
 }
 
-const BoardContent = ({ flow }: BoardContentProps) => (
-  <Box
-    sx={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
-      gap: 3,
-      ml: 2,
-    }}
-  >
-    {flow?.columns.map((column, index) => (
-      <BoardColumn key={index} item={column} />
-    ))}
-  </Box>
-);
+const BoardContent = ({ flow }: BoardContentProps) => {
+  const { flowDispatch } = useBoardContext();
+  const [opened, setOpened] = useToggle(false);
+  const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
+    if (!args) {
+      return setOpened(false);
+    }
+    if (args.name) {
+      flowDispatch(flowActions.add(0, args.name));
+      return setOpened(false);
+    }
+  };
+  return (
+    <Box sx={{ m: 2 }}>
+      <Button autoFocus startIcon={<Add />} onClick={() => setOpened(true)}>
+        Add Column
+      </Button>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: 3,
+        }}
+      >
+        {flow?.columns.map((column, index) => (
+          <BoardColumn key={index} item={column} />
+        ))}
+        <SetColumnModal opened={opened} onSubmit={handleSumbit} />
+      </Box>
+    </Box>
+  );
+};
 
 const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
   const [opened, setOpened] = useToggle(false);

@@ -31,7 +31,7 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
       <DialogContent>
         <Stack>
           <Typography variant="h5">
-            {column ? "Edit task" : "Create task"}
+            {column ? "Edit column" : "Create column"}
           </Typography>
           <Spacing v={2} />
           <TextInput
@@ -48,11 +48,11 @@ const SetColumnModal = ({ opened, onSubmit, column }: SetColumnModalProps) => {
       <DialogActions>
         {!!column && flowPermissions.canDeleteColumns && (
           <Button autoFocus onClick={() => onSubmit({ deleteAction: true })}>
-            Delete task
+            Delete column
           </Button>
         )}
         <Button autoFocus onClick={() => onSubmit({ name })}>
-          {column ? "Save changes" : "Create task"}
+          {column ? "Save changes" : "Create column"}
         </Button>
       </DialogActions>
     </Dialog>
