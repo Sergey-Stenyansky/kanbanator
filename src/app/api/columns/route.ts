@@ -1,9 +1,9 @@
-import { users } from "@/mocks/users";
+import { columns } from "@/mocks/columns";
 
 export async function GET() {
   return Response.json({
     code: 200,
     status: "success",
-    data: users,
+    data: columns,
   });
 }

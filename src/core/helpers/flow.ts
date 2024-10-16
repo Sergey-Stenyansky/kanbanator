@@ -1,14 +1,8 @@
-import { tasks } from "@/mocks/tasks";
-import { comments } from "@/mocks/comments";
-import { columns } from "@/mocks/columns";
+import { KanbanDataResponse } from "../services/api/types";
+import { KanbanFlow, KanbanFlowItem } from "../types";
 
-import { KanbanFlow, KanbanFlowItem, KanbanUser } from "../types";
-
-export const prepareFlow = (
-  flow: KanbanFlow,
-  data: { users: KanbanUser[] }
-) => {
-  const { users } = data;
+export const prepareFlow = (flow: KanbanFlow, data: KanbanDataResponse) => {
+  const { users, tasks, columns, comments } = data;
   return {
     ...flow,
     columns: flow.columns.map((id) => {

@@ -1,14 +1,13 @@
 "use client";
 
-import { KanbanUser } from "@/core/types";
-
 import BoardContextProvider from "@/app/board/provider";
 
 import BoardContent from "../BoardContent";
+import { KanbanDataResponse } from "@/core/services/api/types";
 
-const BoardWrapper = ({ users }: { users: KanbanUser[] }) => {
+const BoardWrapper = ({ data }: { data: KanbanDataResponse }) => {
   return (
-    <BoardContextProvider users={users}>
+    <BoardContextProvider data={data}>
       <BoardContent />
     </BoardContextProvider>
   );
