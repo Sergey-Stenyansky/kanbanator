@@ -63,6 +63,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
     setPriority(undefined);
     setDeadline("");
     setLabels([]);
+    setAssignedTo([]);
   }, [opened]);
 
   const dropdownOptions = useMemo(
