@@ -1,4 +1,8 @@
-import { KanbanColumnItem, KanbanFlowItem } from "@/core/types";
+import {
+  KanbanColumnItem,
+  KanbanFlowItem,
+  KanbanTaskConfig,
+} from "@/core/types";
 import { Box, Stack, Typography, Button, IconButton } from "@mui/material";
 import KanbanTaskCard from "@/components/KanbanTaskCard";
 
@@ -38,7 +42,7 @@ const BoardContent = ({ flow }: BoardContentProps) => {
       return setOpened(false);
     }
     if (args.name) {
-      flowDispatch(flowActions.add(args.name));
+      flowDispatch(flowActions.addColumn(args.name));
       return setOpened(false);
     }
   };
@@ -71,18 +75,20 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
       return setAddColumnOpened(false);
     }
     if (args.name) {
-      flowDispatch(flowActions.update(item.id, args.name));
+      flowDispatch(flowActions.updateColumn(item.id, args.name));
       return setAddColumnOpened(false);
     }
     if (args.deleteAction) {
-      flowDispatch(flowActions.remove(item.id));
+      flowDispatch(flowActions.removeColumn(item.id));
       return setAddColumnOpened(false);
     }
   };
-  const handleSubmitAddTask = (args?: {}) => {
+  const handleSubmitAddTask = (args?: KanbanTaskConfig) => {
     if (!args) {
       return setAddTaskOpened(false);
     }
+    flowDispatch(flowActions.addTask(item.id, args));
+    setAddTaskOpened(false);
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

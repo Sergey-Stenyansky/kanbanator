@@ -4,3 +4,5 @@ export const idGenerator = (start = 0) => {
 };
 
 export const columnIdGenerator = idGenerator(100);
+
+export const taskIdGenerator = idGenerator(100);

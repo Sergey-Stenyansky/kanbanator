@@ -1,4 +1,4 @@
-import { KanbanTaskPriority } from "@/core/types";
+import { KanbanTaskConfig, KanbanTaskPriority } from "@/core/types";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,7 @@ import DateField from "@/primitives/DateField";
 
 export interface SetKanbanTaksModalProps {
   opened: boolean;
-  onSubmit: (args?: { name: string; description: string }) => void;
+  onSubmit: (args?: KanbanTaskConfig) => void;
 }
 
 export type TaskPriorityItem = {
@@ -44,7 +44,7 @@ export const priorityItems: TaskPriorityItem[] = [
 const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<KanbanTaskPriority | null>(null);
+  const [priority, setPriority] = useState<KanbanTaskPriority | undefined>();
   const [contextOpen, setContextOpen] = useToggle(false);
   const [deadline, setDeadline] = useState("");
 
@@ -54,7 +54,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
     if (!opened) return;
     setName("");
     setDescription("");
-    setPriority(null);
+    setPriority(undefined);
     setDeadline("");
   }, [opened]);
 
@@ -128,7 +128,13 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
         <DateField title="Due to" value={deadline} onChange={setDeadline} />
       </DialogContent>
       <DialogActions>
-        <Button disabled={!isValid} autoFocus onClick={() => onSubmit()}>
+        <Button
+          disabled={!isValid}
+          autoFocus
+          onClick={() => {
+            onSubmit({ name, description, priority, deadline, assignedTo: [] });
+          }}
+        >
           Create Task
         </Button>
       </DialogActions>

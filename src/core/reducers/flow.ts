@@ -1,30 +1,45 @@
-import { columnIdGenerator } from "@/helpers/idGenerator";
-import { KanbanColumnItem, KanbanFlowItem, KanbanTaskItem } from "../types";
+import { columnIdGenerator, taskIdGenerator } from "@/helpers/idGenerator";
+import {
+  KanbanColumnItem,
+  KanbanFlowItem,
+  KanbanTaskConfig,
+  KanbanTaskItem,
+  KanbanTaskPriority,
+} from "../types";
 import { getFlowPermissions } from "../helpers/flow";
+import dayjs from "dayjs";
+import formatDate, { DateFormat } from "@/helpers/date/format";
+import { users } from "@/mocks/users";
 
 export type FlowStoreState = {
   flow: KanbanFlowItem;
 };
 
 export enum FlowStoreActionTypes {
-  add = "add",
-  remove = "remove",
-  update = "update",
+  addTask = "addTask",
+  addColumn = "addColumn",
+  removeColumn = "removeColumn",
+  updateColumn = "updateColumn",
   swapTask = "swapTask",
 }
 
-type FlowStoreActionAdd = {
-  type: FlowStoreActionTypes.add;
+type FlowStoreActionAddTask = {
+  type: FlowStoreActionTypes.addTask;
+  payload: { columnId: number; config: KanbanTaskConfig; position?: number };
+};
+
+type FlowStoreActionAddColumn = {
+  type: FlowStoreActionTypes.addColumn;
   payload: { name: string; position?: number };
 };
 
-type FlowStoreActionRemove = {
-  type: FlowStoreActionTypes.remove;
+type FlowStoreActionRemoveColumn = {
+  type: FlowStoreActionTypes.removeColumn;
   payload: number;
 };
 
-type FlowStoreActionUpdate = {
-  type: FlowStoreActionTypes.update;
+type FlowStoreActionUpdateColumn = {
+  type: FlowStoreActionTypes.updateColumn;
   payload: { id: number; config: Partial<KanbanColumnItem> };
 };
 
@@ -34,9 +49,10 @@ type FlowStoreActionSwapTask = {
 };
 
 export type FlowStoreActions =
-  | FlowStoreActionAdd
-  | FlowStoreActionRemove
-  | FlowStoreActionUpdate
+  | FlowStoreActionAddTask
+  | FlowStoreActionAddColumn
+  | FlowStoreActionRemoveColumn
+  | FlowStoreActionUpdateColumn
   | FlowStoreActionSwapTask;
 
 export const FlowStore = (
@@ -45,7 +61,46 @@ export const FlowStore = (
 ) => {
   const flow = state.flow;
   switch (type) {
-    case FlowStoreActionTypes.add: {
+    case FlowStoreActionTypes.addTask: {
+      const column = state.flow.columns.find(
+        (col) => col.id === payload.columnId
+      );
+      if (!column) return state;
+      const newTask: KanbanTaskItem = {
+        id: taskIdGenerator(),
+        name: payload.config.name,
+        description: payload.config.description || "",
+        deadline: payload.config.deadline || "",
+        assignedTo: (payload.config.assignedTo || [])
+          .map((userId) => users.find((user) => userId === user.id)!)
+          .filter(Boolean),
+        createdAt: formatDate(dayjs(), DateFormat.fullDateISO),
+        editedAt: formatDate(dayjs(), DateFormat.fullDateISO),
+        createdBy: { id: 1, name: "Jacob Burton", role: "deeveloper" },
+        comments: [],
+        priority: payload.config.priority || KanbanTaskPriority.low,
+        labels: payload.config.labels || [],
+      };
+
+      return {
+        ...state,
+        flow: {
+          ...flow,
+          columns: flow.columns.map((col) => {
+            if (col.id !== column.id) return col;
+            return {
+              ...col,
+              tasks: col.tasks.toSpliced(
+                payload.position || col.tasks.length - 1,
+                0,
+                newTask
+              ),
+            };
+          }),
+        },
+      };
+    }
+    case FlowStoreActionTypes.addColumn: {
       if (!getFlowPermissions(state.flow).canAddColumns) return state;
       const newColumn: KanbanColumnItem = {
         id: columnIdGenerator(),
@@ -61,7 +116,7 @@ export const FlowStore = (
         },
       };
     }
-    case FlowStoreActionTypes.remove: {
+    case FlowStoreActionTypes.removeColumn: {
       if (!getFlowPermissions(state.flow).canDeleteColumns) return state;
       const idx = flow.columns.findIndex((col) => col.id === payload);
       if (idx < 0) return state;
@@ -70,7 +125,7 @@ export const FlowStore = (
         flow: { ...flow, columns: flow.columns.toSpliced(idx, 1) },
       };
     }
-    case FlowStoreActionTypes.update: {
+    case FlowStoreActionTypes.updateColumn: {
       const idx = flow.columns.findIndex((col) => col.id === payload.id);
       if (idx < 0) return state;
       const oldColumn = flow.columns[idx];
@@ -114,16 +169,21 @@ export const FlowStore = (
 };
 
 export const flowActions = {
-  add: (name: string, position?: number) =>
+  addTask: (columnId: number, config: KanbanTaskConfig, position?: number) =>
     ({
-      type: FlowStoreActionTypes.add,
+      type: FlowStoreActionTypes.addTask,
+      payload: { columnId, config, position },
+    } as const),
+  addColumn: (name: string, position?: number) =>
+    ({
+      type: FlowStoreActionTypes.addColumn,
       payload: { name, position },
     } as const),
-  remove: (id: number) =>
-    ({ type: FlowStoreActionTypes.remove, payload: id } as const),
-  update: (id: number, name: string) =>
+  removeColumn: (id: number) =>
+    ({ type: FlowStoreActionTypes.removeColumn, payload: id } as const),
+  updateColumn: (id: number, name: string) =>
     ({
-      type: FlowStoreActionTypes.update,
+      type: FlowStoreActionTypes.updateColumn,
       payload: { id, config: { name } },
     } as const),
   swapTask: (srcId: string, dstId: string, srcIdx: number, dstIdx: number) =>
