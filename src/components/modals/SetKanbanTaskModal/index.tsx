@@ -8,6 +8,9 @@ import {
   ListItemText,
   DialogActions,
   Button,
+  Autocomplete,
+  Chip,
+  TextField,
 } from "@mui/material";
 
 import { memo, ChangeEvent, useState, useEffect } from "react";
@@ -47,6 +50,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
   const [priority, setPriority] = useState<KanbanTaskPriority | undefined>();
   const [contextOpen, setContextOpen] = useToggle(false);
   const [deadline, setDeadline] = useState("");
+  const [labels, setLabels] = useState<string[]>([]);
 
   const isValid = !!name.trim();
 
@@ -56,6 +60,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
     setDescription("");
     setPriority(undefined);
     setDeadline("");
+    setLabels([]);
   }, [opened]);
 
   return (
@@ -126,13 +131,46 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
         />
         <Spacing v={2} />
         <DateField title="Due to" value={deadline} onChange={setDeadline} />
+        <Spacing v={2} />
+        <Typography mb="4px">Labels</Typography>
+        <Autocomplete
+          clearIcon={false}
+          options={[]}
+          freeSolo
+          multiple
+          onChange={(_, value) => setLabels(value)}
+          renderTags={(value, createProps) =>
+            value.map((option, index) => {
+              const props = createProps({ index });
+              return (
+                <Chip
+                  label={option}
+                  key={props.key}
+                  className={props.className}
+                  tabIndex={props.tabIndex}
+                  disabled={props.disabled}
+                  onDelete={props.onDelete}
+                  data-tag-index={props["data-tag-index"]}
+                />
+              );
+            })
+          }
+          renderInput={(params) => <TextField label="Add labels" {...params} />}
+        />
       </DialogContent>
       <DialogActions>
         <Button
           disabled={!isValid}
           autoFocus
           onClick={() => {
-            onSubmit({ name, description, priority, deadline, assignedTo: [] });
+            onSubmit({
+              name,
+              description,
+              priority,
+              deadline,
+              labels,
+              assignedTo: [],
+            });
           }}
         >
           Create Task
