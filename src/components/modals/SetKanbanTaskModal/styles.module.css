@@ -1,0 +1,5 @@
+.container {
+  width: 640px;
+  max-width: calc(100% - 32px);
+  min-height: 500px;
+}

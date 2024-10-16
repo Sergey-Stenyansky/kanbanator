@@ -1,4 +1,9 @@
-export type KanbanTaskPriority = "low" | "medium" | "high" | "critical";
+export enum KanbanTaskPriority {
+  low = "low",
+  medium = "medium",
+  high = "high",
+  critical = "critical",
+}
 
 export type KanbanTaskComment = {
   id: number;
@@ -59,4 +64,13 @@ export type KanbanFlow = {
 
 export type KanbanFlowItem = Omit<KanbanFlow, "columns"> & {
   columns: KanbanColumnItem[];
+};
+
+export type KanbanTaskConfig = {
+  name: string;
+  description?: string;
+  priority?: KanbanTaskPriority;
+  deadline?: string;
+  assignedTo?: number[];
+  labels?: string[];
 };

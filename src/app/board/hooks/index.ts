@@ -9,15 +9,15 @@ export const useKanbanFlow = () => {
   const { flowState, flowDispatch } = useBoardContext();
 
   const addColumn = (name: string, position?: number) => {
-    flowDispatch(flowActions.add(name, position));
+    flowDispatch(flowActions.addColumn(name, position));
   };
 
   const removeColumn = (id: number) => {
-    flowDispatch(flowActions.remove(id));
+    flowDispatch(flowActions.removeColumn(id));
   };
 
   const setColumnName = (id: number, name: string) => {
-    flowDispatch(flowActions.update(id, name));
+    flowDispatch(flowActions.updateColumn(id, name));
   };
 
   const onDragEnd = (res: DropResult) => {

@@ -1,5 +1,9 @@
-import { KanbanColumnItem, KanbanFlowItem } from "@/core/types";
-import { Box, Stack, Typography, Button } from "@mui/material";
+import {
+  KanbanColumnItem,
+  KanbanFlowItem,
+  KanbanTaskConfig,
+} from "@/core/types";
+import { Box, Stack, Typography, Button, IconButton } from "@mui/material";
 import KanbanTaskCard from "@/components/KanbanTaskCard";
 
 import Spacing from "@/primitives/Spacing";
@@ -13,6 +17,8 @@ import SetColumnModal from "../SetColumnModal";
 import { useBoardContext } from "@/app/board/context";
 import { flowActions } from "@/core/reducers/flow";
 import { Add } from "@mui/icons-material";
+import InternalIcon from "@/primitives/InternalIcon";
+import SetKanbanTaskModal from "@/components/modals/SetKanbanTaskModal";
 
 export interface BoardContentProps {
   flow: KanbanFlowItem | null;
@@ -36,7 +42,7 @@ const BoardContent = ({ flow }: BoardContentProps) => {
       return setOpened(false);
     }
     if (args.name) {
-      flowDispatch(flowActions.add(args.name));
+      flowDispatch(flowActions.addColumn(args.name));
       return setOpened(false);
     }
   };
@@ -58,32 +64,56 @@ const BoardContent = ({ flow }: BoardContentProps) => {
 };
 
 const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
-  const [opened, setOpened] = useToggle(false);
+  const [addColumnOpened, setAddColumnOpened] = useToggle(false);
+  const [addTaskOpened, setAddTaskOpened] = useToggle(false);
   const { flowDispatch } = useBoardContext();
-  const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
+  const handleSumbitAddColumn = (args?: {
+    name?: string;
+    deleteAction?: boolean;
+  }) => {
     if (!args) {
-      return setOpened(false);
+      return setAddColumnOpened(false);
     }
     if (args.name) {
-      flowDispatch(flowActions.update(item.id, args.name));
-      return setOpened(false);
+      flowDispatch(flowActions.updateColumn(item.id, args.name));
+      return setAddColumnOpened(false);
     }
     if (args.deleteAction) {
-      flowDispatch(flowActions.remove(item.id));
-      return setOpened(false);
+      flowDispatch(flowActions.removeColumn(item.id));
+      return setAddColumnOpened(false);
     }
+  };
+  const handleSubmitAddTask = (args?: KanbanTaskConfig) => {
+    if (!args) {
+      return setAddTaskOpened(false);
+    }
+    flowDispatch(flowActions.addTask(item.id, args));
+    setAddTaskOpened(false);
   };
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Spacing v={1} />
-      <Typography
-        sx={{ cursor: "pointer" }}
-        onClick={() => setOpened(true)}
-        variant="h6"
-      >
-        {item.name}
-      </Typography>
-      <SetColumnModal opened={opened} onSubmit={handleSumbit} column={item} />
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography
+          sx={{ cursor: "pointer" }}
+          onClick={() => setAddColumnOpened(true)}
+          variant="h6"
+        >
+          {item.name}
+        </Typography>
+        <IconButton onClick={() => setAddTaskOpened(true)}>
+          <InternalIcon icon="add" />
+        </IconButton>
+      </Box>
+      <SetColumnModal
+        opened={addColumnOpened}
+        onSubmit={handleSumbitAddColumn}
+        column={item}
+      />
+      <SetKanbanTaskModal
+        opened={addTaskOpened}
+        onSubmit={handleSubmitAddTask}
+      />
       <Spacing v={1} />
       <Droppable droppableId={"column-" + item.id}>
         {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
