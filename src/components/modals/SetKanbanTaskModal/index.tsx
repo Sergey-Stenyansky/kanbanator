@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { memo, ChangeEvent, useState, useEffect } from "react";
+import { memo, ChangeEvent, useState, useEffect, useMemo } from "react";
 
 import ContextMenuItem from "@/primitives/ContextMenuItem";
 
@@ -26,6 +26,7 @@ import { useToggle } from "react-use";
 import styles from "./styles.module.css";
 
 import DateField from "@/primitives/DateField";
+import { users } from "@/mocks/users";
 
 export interface SetKanbanTaksModalProps {
   opened: boolean;
@@ -51,6 +52,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
   const [contextOpen, setContextOpen] = useToggle(false);
   const [deadline, setDeadline] = useState("");
   const [labels, setLabels] = useState<string[]>([]);
+  const [assignedTo, setAssignedTo] = useState<number[]>([]);
 
   const isValid = !!name.trim();
 
@@ -62,6 +64,11 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
     setDeadline("");
     setLabels([]);
   }, [opened]);
+
+  const dropdownOptions = useMemo(
+    () => users.map((u) => ({ ...u, label: u.name })),
+    []
+  );
 
   return (
     <Dialog
@@ -134,10 +141,10 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
         <Spacing v={2} />
         <Typography mb="4px">Labels</Typography>
         <Autocomplete
-          clearIcon={false}
           options={[]}
           freeSolo
           multiple
+          value={labels}
           onChange={(_, value) => setLabels(value)}
           renderTags={(value, createProps) =>
             value.map((option, index) => {
@@ -155,7 +162,36 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
               );
             })
           }
-          renderInput={(params) => <TextField label="Add labels" {...params} />}
+          renderInput={(params) => <TextField {...params} />}
+        />
+        <Spacing v={2} />
+        <Typography mb="4px">Assigned to</Typography>
+        <Autocomplete
+          clearIcon={false}
+          options={dropdownOptions}
+          multiple
+          onChange={(_, value) => {
+            const userIds = new Set(value.map((v) => v.id));
+            setAssignedTo(Array.from(userIds));
+          }}
+          getOptionDisabled={(option) => assignedTo.includes(option.id)}
+          renderTags={(value, createProps) =>
+            value.map((option, index) => {
+              const props = createProps({ index });
+              return (
+                <Chip
+                  label={option.name}
+                  key={props.key}
+                  className={props.className}
+                  tabIndex={props.tabIndex}
+                  disabled={props.disabled}
+                  onDelete={props.onDelete}
+                  data-tag-index={props["data-tag-index"]}
+                />
+              );
+            })
+          }
+          renderInput={(params) => <TextField {...params} />}
         />
       </DialogContent>
       <DialogActions>
@@ -169,7 +205,7 @@ const SetKanbanTaskModal = ({ opened, onSubmit }: SetKanbanTaksModalProps) => {
               priority,
               deadline,
               labels,
-              assignedTo: [],
+              assignedTo,
             });
           }}
         >
