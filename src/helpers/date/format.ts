@@ -4,6 +4,7 @@ export enum DateFormat {
   date = "DD MMM YYYY",
   shortDateISO = "YYYY-MM-DD",
   fullDateISO = "YYYY-MM-DD HH:mm:ss",
+  shortDate = "DD.MM.YYYY",
 }
 
 export default function formatDate(

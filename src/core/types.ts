@@ -1,4 +1,10 @@
-export type KanbanTaskPriority = "low" | "medium" | "high" | "critical";
+// export type KanbanTaskPriority = "low" | "medium" | "high" | "critical";
+export enum KanbanTaskPriority {
+  low = "low",
+  medium = "medium",
+  high = "high",
+  critical = "critical",
+}
 
 export type KanbanTaskComment = {
   id: number;
