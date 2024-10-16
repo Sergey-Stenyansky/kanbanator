@@ -4,17 +4,20 @@ import { FlowStore } from "@/core/reducers/flow";
 
 import { flow } from "@/mocks/flow";
 
-import { KanbanFlow } from "@/core/types";
+import { KanbanFlow, KanbanUser } from "@/core/types";
 
 import { getFlowPermissions, prepareFlow } from "@/core/helpers/flow";
 
 import { BoardContext } from "./context";
 
-const BoardContextProvider = ({ children }: PropsWithChildren<{}>) => {
+const BoardContextProvider = ({
+  users,
+  children,
+}: PropsWithChildren<{ users: KanbanUser[] }>) => {
   const [flowState, flowDispatch] = useReducer(
     FlowStore,
     flow,
-    (flow: KanbanFlow) => ({ flow: prepareFlow(flow) })
+    (flow: KanbanFlow) => ({ flow: prepareFlow(flow, { users }) })
   );
 
   const permisisons = getFlowPermissions(flowState.flow);
