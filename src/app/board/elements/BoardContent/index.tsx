@@ -16,6 +16,7 @@ import { flowActions } from "@/core/reducers/flow";
 import { Add } from "@mui/icons-material";
 
 import { useKanbanFlow } from "@/app/board/hooks";
+import { useSearchParams } from "next/navigation";
 
 const boardContentStyles = {
   display: "grid",
@@ -39,6 +40,8 @@ const BoardContent = () => {
       return setOpened(false);
     }
   };
+  const searchParams = useSearchParams();
+  const openTaskId = searchParams.get("task-id");
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Box sx={{ p: 2 }}>
@@ -49,7 +52,11 @@ const BoardContent = () => {
         </Box>
         <Box sx={boardContentStyles}>
           {flowState.flow?.columns.map((column, index) => (
-            <BoardColumn key={index} item={column} />
+            <BoardColumn
+              key={index}
+              item={column}
+              openTaskId={openTaskId ? +openTaskId : null}
+            />
           ))}
           <SetColumnModal opened={opened} onSubmit={handleSumbit} />
         </Box>
@@ -58,7 +65,13 @@ const BoardContent = () => {
   );
 };
 
-const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
+const BoardColumn = ({
+  item,
+  openTaskId,
+}: {
+  item: KanbanColumnItem;
+  openTaskId: number | null;
+}) => {
   const [opened, setOpened] = useToggle(false);
   const { flowDispatch } = useBoardContext();
   const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
@@ -103,7 +116,12 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
             {...provided.droppableProps}
           >
             {item.tasks.map((task, index) => (
-              <KanbanTaskCard index={index} key={task.id} task={task} />
+              <KanbanTaskCard
+                index={index}
+                key={task.id}
+                task={task}
+                forceOpen={openTaskId === task.id}
+              />
             ))}
           </Stack>
         )}

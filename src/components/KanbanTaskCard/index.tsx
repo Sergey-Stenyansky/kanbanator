@@ -23,15 +23,24 @@ import KanbanTaskModal from "../modals/KanbanTaskModal";
 import { taskPriorityColorsMap } from "@/core/helpers/constant";
 
 import styles from "./style.module.css";
+import { useEffect } from "react";
 
 const KanbanTaskCard = ({
   task,
   index,
+  forceOpen,
 }: {
   task: KanbanTaskItem;
   index: number;
+  forceOpen?: boolean;
 }) => {
   const [opened, toggleOpened] = useToggle(false);
+  useEffect(() => {
+    if (forceOpen) {
+      const open = () => toggleOpened(true);
+      setTimeout(open, 200);
+    }
+  }, [forceOpen, toggleOpened]);
   return (
     <>
       <Draggable draggableId={"task-" + task.id} index={index}>
