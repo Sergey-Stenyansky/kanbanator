@@ -5,6 +5,8 @@ import { getFlowPermissions } from "@/core/helpers/flow";
 export type BoardContextType = {
   flowState: FlowStoreState;
   flowDispatch: Dispatch<FlowStoreActions>;
+  taskId: number | null,
+  setTaskId: (id: number | null) => void
   flowPermissions: ReturnType<typeof getFlowPermissions>;
 };
 

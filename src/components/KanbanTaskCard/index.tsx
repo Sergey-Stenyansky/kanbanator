@@ -17,8 +17,6 @@ import {
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import { useToggle } from "react-use";
-import KanbanTaskModal from "../modals/KanbanTaskModal";
 
 import { taskPriorityColorsMap } from "@/core/helpers/constant";
 
@@ -26,12 +24,13 @@ import styles from "./style.module.css";
 
 const KanbanTaskCard = ({
   task,
+  onClick,
   index,
 }: {
   task: KanbanTaskItem;
+  onClick: () => void
   index: number;
 }) => {
-  const [opened, toggleOpened] = useToggle(false);
   return (
     <>
       <Draggable draggableId={"task-" + task.id} index={index}>
@@ -41,7 +40,7 @@ const KanbanTaskCard = ({
             sx={{ backgroundColor: snapshot.isDragging ? "lightcoral" : "" }}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            onClick={toggleOpened}
+            onClick={onClick}
           >
             <CardContent>
               <KanbanTaskCardHeader
@@ -59,11 +58,6 @@ const KanbanTaskCard = ({
           </Card>
         )}
       </Draggable>
-      <KanbanTaskModal
-        opened={opened}
-        onChangeOpened={toggleOpened}
-        task={task}
-      />
     </>
   );
 };

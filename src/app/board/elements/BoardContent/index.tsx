@@ -16,6 +16,8 @@ import { flowActions } from "@/core/reducers/flow";
 import { Add } from "@mui/icons-material";
 
 import { useKanbanFlow } from "@/app/board/hooks";
+import KanbanTaskModal from "@/components/modals/KanbanTaskModal";
+import { Suspense } from "react";
 
 const boardContentStyles = {
   display: "grid",
@@ -54,13 +56,16 @@ const BoardContent = () => {
           <SetColumnModal opened={opened} onSubmit={handleSumbit} />
         </Box>
       </Box>
+      <Suspense fallback={null}>
+        <KanbanTaskModal />
+      </Suspense>
     </DragDropContext>
   );
 };
 
 const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
   const [opened, setOpened] = useToggle(false);
-  const { flowDispatch } = useBoardContext();
+  const { flowDispatch, setTaskId } = useBoardContext();
   const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
     if (!args) {
       return setOpened(false);
@@ -103,7 +108,12 @@ const BoardColumn = ({ item }: { item: KanbanColumnItem }) => {
             {...provided.droppableProps}
           >
             {item.tasks.map((task, index) => (
-              <KanbanTaskCard index={index} key={task.id} task={task} />
+              <KanbanTaskCard
+                index={index}
+                key={task.id}
+                task={task}
+                onClick={() => setTaskId(task.id)}
+              />
             ))}
           </Stack>
         )}

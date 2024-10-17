@@ -1,4 +1,4 @@
-import { PropsWithChildren, useReducer } from "react";
+import { PropsWithChildren, useReducer, useState } from "react";
 
 import { FlowStore } from "@/core/reducers/flow";
 
@@ -21,11 +21,15 @@ const BoardContextProvider = ({
     (flow: KanbanFlow) => ({ flow: prepareFlow(flow, data) })
   );
 
+  const [taskId, setTaskId] = useState<number | null>(null)
+
   const permisisons = getFlowPermissions(flowState.flow);
 
   const contextValue = {
     flowState,
     flowDispatch,
+    taskId,
+    setTaskId,
     flowPermissions: permisisons,
   };
 
