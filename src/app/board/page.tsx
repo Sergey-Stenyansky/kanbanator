@@ -18,6 +18,7 @@ const getData = async () => {
 };
 
 export default async function Board() {
+  return <div>Board stub</div>;
   const data = await getData();
   return <BoardWrapper data={data} />;
 }
