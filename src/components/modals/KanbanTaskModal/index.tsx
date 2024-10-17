@@ -1,4 +1,7 @@
-import { KanbanTaskItem } from "@/core/types";
+import {
+  KanbanFlowItem,
+  KanbanTaskItem,
+} from "@/core/types";
 import {
   Dialog,
   Stack,
@@ -8,7 +11,7 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
-import { memo } from "react";
+import { memo, useCallback, useEffect, useMemo } from "react";
 
 import BaseCell from "@/primitives/Cells/Base";
 
@@ -19,6 +22,67 @@ import KanbanTaskCommentCard from "@/components/KanbanTaskCommentCard";
 import formatDate, { DateFormat } from "@/helpers/date/format";
 
 import { taskPriorityColorsMap } from "@/core/helpers/constant";
+
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import { useToggle } from "react-use";
+import { useBoardContext } from "@/app/board/context";
+
+const findTaskById = (id: number, flow: KanbanFlowItem) => {
+  const tasks = flow.columns.flatMap((col) => col.tasks);
+  return tasks.find((task) => id === task.id);
+};
+
+const KanbanTaskModalWrapper = () => {
+  const { taskId, setTaskId, flowState } = useBoardContext();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [opened, toggleOpened] = useToggle(false);
+
+  const closeModal = useCallback(() => {
+    setTaskId(null);
+    toggleOpened(false);
+  }, [setTaskId, toggleOpened]);
+
+  useEffect(() => {
+    const queryTaskId = searchParams.get("task-id");
+    const innerTaskId = queryTaskId ? +queryTaskId : null;
+    if (innerTaskId) setTaskId(innerTaskId);
+  }, [searchParams, setTaskId]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    if (taskId) {
+      params.set("task-id", String(taskId));
+    } else {
+      params.delete("task-id");
+    }
+    const qs = params.toString();
+    if (qs) {
+      router.replace(pathname + "?" + qs);
+    } else {
+      router.replace(pathname);
+    }
+    toggleOpened(!!taskId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskId]);
+
+  const openTask = useMemo(
+    () => (taskId ? findTaskById(taskId, flowState.flow) : null),
+    [taskId, flowState]
+  );
+
+  if (!openTask) return null;
+
+  return (
+    <KanbanTaskModal
+      task={openTask}
+      opened={opened}
+      onChangeOpened={closeModal}
+    />
+  );
+};
 
 export interface KanbanTaksModalProps {
   opened: boolean;
@@ -101,4 +165,4 @@ const KanbanTaskModal = ({
   );
 };
 
-export default memo(KanbanTaskModal);
+export default memo(KanbanTaskModalWrapper);
