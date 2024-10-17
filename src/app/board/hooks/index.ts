@@ -1,5 +1,3 @@
-"use client";
-
 import { DropResult } from "@hello-pangea/dnd";
 
 import { flowActions } from "@/core/reducers/flow";
