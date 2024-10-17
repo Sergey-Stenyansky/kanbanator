@@ -8,18 +8,6 @@ import { useBoardContext } from "../context";
 export const useKanbanFlow = () => {
   const { flowState, flowDispatch } = useBoardContext();
 
-  const addColumn = (name: string, position?: number) => {
-    flowDispatch(flowActions.add(name, position));
-  };
-
-  const removeColumn = (id: number) => {
-    flowDispatch(flowActions.remove(id));
-  };
-
-  const setColumnName = (id: number, name: string) => {
-    flowDispatch(flowActions.update(id, name));
-  };
-
   const onDragEnd = (res: DropResult) => {
     if (!res.destination) return;
 
@@ -36,10 +24,8 @@ export const useKanbanFlow = () => {
   };
 
   return {
-    addColumn,
-    removeColumn,
-    setColumnName,
     flowState,
+    flowDispatch,
     onDragEnd,
   };
 };

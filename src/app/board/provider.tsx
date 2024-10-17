@@ -9,12 +9,16 @@ import { KanbanFlow } from "@/core/types";
 import { getFlowPermissions, prepareFlow } from "@/core/helpers/flow";
 
 import { BoardContext } from "./context";
+import { KanbanDataResponse } from "@/core/services/api/types";
 
-const BoardContextProvider = ({ children }: PropsWithChildren<{}>) => {
+const BoardContextProvider = ({
+  data,
+  children,
+}: PropsWithChildren<{ data: KanbanDataResponse }>) => {
   const [flowState, flowDispatch] = useReducer(
     FlowStore,
     flow,
-    (flow: KanbanFlow) => ({ flow: prepareFlow(flow) })
+    (flow: KanbanFlow) => ({ flow: prepareFlow(flow, data) })
   );
 
   const permisisons = getFlowPermissions(flowState.flow);

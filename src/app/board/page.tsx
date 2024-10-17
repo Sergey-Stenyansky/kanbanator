@@ -1,25 +1,23 @@
-"use client";
+import {
+  getColumns,
+  getComments,
+  getTasks,
+  getUsers,
+} from "@/core/services/api/";
+import BoardWrapper from "./elements/BoardWrapper";
 
-import BoardContent from "./elements/BoardContent";
+const getData = async () => {
+  const [users, tasks, columns, comments] = await Promise.all([
+    getUsers(),
+    getTasks(),
+    getColumns(),
+    getComments(),
+  ]);
 
-import { DragDropContext } from "@hello-pangea/dnd";
+  return { users, tasks, columns, comments };
+};
 
-import { useKanbanFlow } from "./hooks";
-import BoardContextProvider from "./provider";
-
-function PageContent() {
-  const { flowState, onDragEnd } = useKanbanFlow();
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <BoardContent flow={flowState.flow} />
-    </DragDropContext>
-  );
-}
-
-export default function Board() {
-  return (
-    <BoardContextProvider>
-      <PageContent />
-    </BoardContextProvider>
-  );
+export default async function Board() {
+  const data = await getData();
+  return <BoardWrapper data={data} />;
 }

@@ -1,9 +1,10 @@
-import { KanbanColumnItem, KanbanFlowItem } from "@/core/types";
+import { KanbanColumnItem } from "@/core/types";
 import { Box, Stack, Typography, Button } from "@mui/material";
 import KanbanTaskCard from "@/components/KanbanTaskCard";
 
 import Spacing from "@/primitives/Spacing";
 import {
+  DragDropContext,
   Droppable,
   DroppableProvided,
   DroppableStateSnapshot,
@@ -14,9 +15,7 @@ import { useBoardContext } from "@/app/board/context";
 import { flowActions } from "@/core/reducers/flow";
 import { Add } from "@mui/icons-material";
 
-export interface BoardContentProps {
-  flow: KanbanFlowItem | null;
-}
+import { useKanbanFlow } from "@/app/board/hooks";
 
 const boardContentStyles = {
   display: "grid",
@@ -28,8 +27,8 @@ const boardContentStyles = {
   minHeight: "720px",
 };
 
-const BoardContent = ({ flow }: BoardContentProps) => {
-  const { flowDispatch } = useBoardContext();
+const BoardContent = () => {
+  const { flowState, onDragEnd, flowDispatch } = useKanbanFlow();
   const [opened, setOpened] = useToggle(false);
   const handleSumbit = (args?: { name?: string; deleteAction?: boolean }) => {
     if (!args) {
@@ -41,19 +40,21 @@ const BoardContent = ({ flow }: BoardContentProps) => {
     }
   };
   return (
-    <Box sx={{ p: 2 }}>
-      <Box>
-        <Button autoFocus startIcon={<Add />} onClick={() => setOpened(true)}>
-          Add Column
-        </Button>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Box sx={{ p: 2 }}>
+        <Box>
+          <Button autoFocus startIcon={<Add />} onClick={() => setOpened(true)}>
+            Add Column
+          </Button>
+        </Box>
+        <Box sx={boardContentStyles}>
+          {flowState.flow?.columns.map((column, index) => (
+            <BoardColumn key={index} item={column} />
+          ))}
+          <SetColumnModal opened={opened} onSubmit={handleSumbit} />
+        </Box>
       </Box>
-      <Box sx={boardContentStyles}>
-        {flow?.columns.map((column, index) => (
-          <BoardColumn key={index} item={column} />
-        ))}
-        <SetColumnModal opened={opened} onSubmit={handleSumbit} />
-      </Box>
-    </Box>
+    </DragDropContext>
   );
 };
 
